@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Search, Menu, X, ChevronLeft, ChevronRight, Filter, Phone, Mail, MapPin, Star } from 'lucide-react';
+import emailjs from 'emailjs-com'
 
 // Datos de ejemplo para los sneakers
 const sneakersData = [
@@ -385,21 +386,35 @@ const App = () => {
             </p>
             <button
               onClick={() => scrollToSection('catálogo')}
-              className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold rounded-full hover:scale-105 transition-transform shadow-lg shadow-yellow-500/50"
+              className="relative px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold rounded-full hover:scale-105 transition-transform shadow-lg shadow-yellow-500/50 overflow-hidden group"
             >
-              Explorar Catálogo
+              <span className="relative z-10">Explorar Catálogo</span>
+              <span className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-transparent via-white to-transparent opacity-30 group-hover:opacity-50 animate-border-flow"></span>
             </button>
-            
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-              <div className="backdrop-blur-lg bg-white/5 p-6 rounded-2xl border border-yellow-500/20">
+            <style>{`
+              @keyframes border-flow {
+                0% {
+                  transform: translateX(-100%) rotate(0deg);
+                }
+                100% {
+                  transform: translateX(100%) rotate(360deg);
+                }
+              }
+              .animate-border-flow {
+                animation: border-flow 2s linear infinite;
+              }
+            `}</style>
+
+                        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              <div className="backdrop-blur-lg bg-white/5 p-6 rounded-2xl border border-yellow-500/20 hover:border-yellow-400 hover:bg-white/10 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/30 transition-all duration-300 cursor-pointer">
                 <h3 className="text-3xl font-bold text-yellow-400 mb-2">20+</h3>
                 <p className="text-gray-400">Modelos Exclusivos</p>
               </div>
-              <div className="backdrop-blur-lg bg-white/5 p-6 rounded-2xl border border-yellow-500/20">
+              <div className="backdrop-blur-lg bg-white/5 p-6 rounded-2xl border border-yellow-500/20 hover:border-yellow-400 hover:bg-white/10 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/30 transition-all duration-300 cursor-pointer">
                 <h3 className="text-3xl font-bold text-yellow-400 mb-2">100%</h3>
                 <p className="text-gray-400">Calidad Premium</p>
               </div>
-              <div className="backdrop-blur-lg bg-white/5 p-6 rounded-2xl border border-yellow-500/20">
+              <div className="backdrop-blur-lg bg-white/5 p-6 rounded-2xl border border-yellow-500/20 hover:border-yellow-400 hover:bg-white/10 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/30 transition-all duration-300 cursor-pointer">
                 <h3 className="text-3xl font-bold text-yellow-400 mb-2">24/7</h3>
                 <p className="text-gray-400">Atención al Cliente</p>
               </div>
@@ -1003,7 +1018,7 @@ const App = () => {
             © 2025 Buena Grasa. Todos los derechos reservados.
           </p>
           <p className="text-gray-500 text-xs mt-2">
-            Diseñado con pasión en Puebla, México
+            Developed by TriCode Studio 
           </p>
         </div>
       </footer>
