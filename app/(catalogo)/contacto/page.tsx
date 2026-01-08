@@ -1,9 +1,12 @@
 "use client"
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useRef } from "react";
+import emailjs from '@emailjs/browser';
 import { Search, Menu, X, ChevronLeft, ChevronRight, Filter, Phone, Mail, MapPin, Star } from 'lucide-react';
 
 export default function ContactPage() {
+    const form = useRef<HTMLFormElement>(null);
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -11,10 +14,34 @@ export default function ContactPage() {
         message: ''
     });
 
+    const [status, setStatus] = useState('idle');
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        alert('Mensaje enviado. Nos pondremos en contacto contigo pronto.');
-        setFormData({ name: '', email: '', phone: '', message: '' });
+        setStatus('sending');
+
+        const SERVICE_ID = "service_accu2n2";
+        const TEMPLATE_ID = "template_qu6k9tj";
+        const PUBLIC_KEY = "h2M6LnDopb7ilO8J-";
+
+        if (form.current) {
+            emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
+                .then((result) => {
+                    console.log('Success:', result.text);
+                    setStatus('success');
+
+                    setFormData({ name: '', email: '', phone: '', message: '' });
+
+                    setTimeout(() => {
+                        setStatus('idle');
+                    }, 3000);
+                }, (error) => {
+                    console.log('Error:', error.text);
+                    setStatus('error');
+
+                    setTimeout(() => setStatus('idle'), 3000);
+                });
+        }
     };
 
     return (
@@ -75,11 +102,13 @@ export default function ContactPage() {
                     <div className="backdrop-blur-lg bg-white/5 p-8 rounded-2xl border border-yellow-500/20">
                         <h3 className="text-2xl font-bold text-yellow-400 mb-6">Envíanos un Mensaje</h3>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form ref={form} onSubmit={handleSubmit} className="space-y-6">
+
                             <div>
                                 <label className="block text-sm font-medium mb-2">Nombre</label>
                                 <input
                                     type="text"
+                                    name="from_name"
                                     required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -92,6 +121,7 @@ export default function ContactPage() {
                                 <label className="block text-sm font-medium mb-2">Email</label>
                                 <input
                                     type="email"
+                                    name="from_email"
                                     required
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -104,6 +134,7 @@ export default function ContactPage() {
                                 <label className="block text-sm font-medium mb-2">Teléfono</label>
                                 <input
                                     type="tel"
+                                    name="phone"
                                     required
                                     value={formData.phone}
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -115,6 +146,7 @@ export default function ContactPage() {
                             <div>
                                 <label className="block text-sm font-medium mb-2">Mensaje</label>
                                 <textarea
+                                    name="message"
                                     required
                                     value={formData.message}
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -126,10 +158,19 @@ export default function ContactPage() {
 
                             <button
                                 type="submit"
-                                className="w-full px-8 py-4 bg-linear-to-r from-yellow-400 to-yellow-600 text-black font-bold rounded-lg hover:scale-105 transition-transform shadow-lg shadow-yellow-500/50"
+                                disabled={status === 'sending'}
+                                className={`w-full px-8 py-4 font-bold rounded-lg transition-all shadow-lg shadow-yellow-500/50 
+                                    ${status === 'sending' ? 'bg-gray-600 text-gray-300' : 'bg-linear-to-r from-yellow-400 to-yellow-600 text-black hover:scale-105'}
+                                `}
                             >
-                                Enviar Mensaje
+
+                                {status === 'sending' ? 'Enviando...' :
+                                    status === 'success' ? '¡Mensaje Enviado!' :
+                                        'Enviar Mensaje'}
                             </button>
+                            {status === 'error' && (
+                                <p className="text-red-500 text-center mt-2">Hubo un error al enviar. Intenta de nuevo.</p>
+                            )}
                         </form>
                     </div>
                 </div>
