@@ -1,3 +1,4 @@
+//imagesbycolor sirve para actualizar las imagenes respecto a su color
 export const sneakersData = [
     {
         id: 1,
@@ -10,7 +11,12 @@ export const sneakersData = [
         category: "Running",
         brand: "FutureFit",
         gender: "Hombre",
-        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800"
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
+        imagesByColor: {
+                        "Negro": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
+                        "Blanco": "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800",
+                        "Amarillo": ""
+                        }   
     },
     {
         id: 2,
