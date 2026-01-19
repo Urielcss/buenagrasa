@@ -12,6 +12,7 @@ const SneakerDataSchema = z.object({
     brand: z.string(),
     gender: z.string(),
     image: z.string(),
+    imagesByColor: z.record(z.string(), z.string()).optional(), // Nuevo campo para cambiar los colores de imagen
 })
 
 const SneakersDataSchema = z.array(SneakerDataSchema)

@@ -1,14 +1,15 @@
 "use client"
 
 import { useState } from 'react'
-import { Search, Menu, X, ChevronLeft, ChevronRight, Filter, Phone, Mail, MapPin, Star } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { sneakersData } from '@/data/sneakersData';
 import { Sneaker } from '@/src/schemas';
 
-export default function page() {
-    const [selectedSneaker, setSelectedSneaker] = useState<Sneaker>();
+export default function Page() {
+    const [selectedSneaker, setSelectedSneaker] = useState<Sneaker | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [rotation, setRotation] = useState(0);
+    const [selectedColor, setSelectedColor] = useState('');
     const [filters, setFilters] = useState({
         category: '',
         brand: '',
@@ -32,14 +33,40 @@ export default function page() {
         return matchesSearch && matchesCategory && matchesBrand && matchesGender && matchesPrice;
     });
 
+    const handleOpenModal = (sneaker: Sneaker) => {
+        setSelectedSneaker(sneaker);
+        setSelectedColor(sneaker.colors[0]);
+        setRotation(0);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedSneaker(null);
+        setRotation(0);
+    };
+
+    const handleColorChange = (color: string) => {
+        setSelectedColor(color);
+    };
+
+    const getCurrentImage = () => {
+        if (!selectedSneaker) return '';
+        // Si existe imagesByColor y el color seleccionado tiene una imagen, la usa
+        if (selectedSneaker.imagesByColor && selectedColor && selectedSneaker.imagesByColor[selectedColor]) {
+            return selectedSneaker.imagesByColor[selectedColor];
+        }
+        // Si no, usa la imagen por defecto
+        return selectedSneaker.image;
+    };
+
     return (
         <>
             <section className="min-h-screen pt-24 px-4 pb-16">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-5xl font-bold mb-8 text-center bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                    <h2 className="text-5xl font-bold mb-8 text-center bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
                         Catálogo
                     </h2>
 
+                    {/* Search Bar */}
                     <div className="mb-8 max-w-2xl mx-auto relative">
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                         <input
@@ -51,6 +78,7 @@ export default function page() {
                         />
                     </div>
 
+                    {/* Filters */}
                     <div className="mb-8">
                         <button
                             onClick={() => setShowFilters(!showFilters)}
@@ -67,6 +95,7 @@ export default function page() {
                                         value={filters.category}
                                         onChange={(e) => setFilters({ ...filters, category: e.target.value })}
                                         className="px-4 py-2 bg-black/50 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-400 text-white"
+                                        aria-label="Filtrar por categoría"
                                     >
                                         <option value="">Todas las categorías</option>
                                         <option value="Running">Running</option>
@@ -78,6 +107,7 @@ export default function page() {
                                         value={filters.brand}
                                         onChange={(e) => setFilters({ ...filters, brand: e.target.value })}
                                         className="px-4 py-2 bg-black/50 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-400 text-white"
+                                        aria-label="Filtrar por marca"
                                     >
                                         <option value="">Todas las marcas</option>
                                         <option value="FutureFit">FutureFit</option>
@@ -90,6 +120,7 @@ export default function page() {
                                         value={filters.gender}
                                         onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
                                         className="px-4 py-2 bg-black/50 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-400 text-white"
+                                        aria-label="Filtrar por género"
                                     >
                                         <option value="">Todos</option>
                                         <option value="Hombre">Hombre</option>
@@ -100,6 +131,7 @@ export default function page() {
                                         value={filters.priceRange}
                                         onChange={(e) => setFilters({ ...filters, priceRange: e.target.value })}
                                         className="px-4 py-2 bg-black/50 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-400 text-white"
+                                        aria-label="Filtrar por rango de precio"
                                     >
                                         <option value="">Todos los precios</option>
                                         <option value="low">Menos de $2,000</option>
@@ -111,11 +143,12 @@ export default function page() {
                         )}
                     </div>
 
+                    {/* Sneakers Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredSneakers.map(sneaker => (
                             <div
                                 key={sneaker.id}
-                                onClick={() => setSelectedSneaker(sneaker)}
+                                onClick={() => handleOpenModal(sneaker)}
                                 className="group cursor-pointer backdrop-blur-lg bg-white/5 rounded-2xl border border-yellow-500/20 overflow-hidden hover:scale-105 hover:border-yellow-400 transition-all duration-300"
                             >
                                 <div className="relative h-64 overflow-hidden">
@@ -124,7 +157,7 @@ export default function page() {
                                         alt={sneaker.name}
                                         className="w-full h-full object-cover group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"
                                     />
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
                                 <div className="p-4">
                                     <h3 className="text-xl font-bold text-yellow-400 mb-1">{sneaker.name}</h3>
@@ -137,9 +170,16 @@ export default function page() {
                 </div>
             </section>
 
+            {/* Modal de Detalle */}
             {selectedSneaker && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg" onClick={() => setSelectedSneaker({} as Sneaker)}>
-                    <div className="bg-black/90 backdrop-blur-xl border border-yellow-500/20 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg animate-fadeIn" 
+                    onClick={handleCloseModal}
+                >
+                    <div 
+                        className="bg-black/90 backdrop-blur-xl border border-yellow-500/20 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-scaleIn" 
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
@@ -147,19 +187,21 @@ export default function page() {
                                     <p className="text-gray-400">{selectedSneaker.model}</p>
                                 </div>
                                 <button
-                                    onClick={() => setSelectedSneaker({} as Sneaker)}
-                                    className="text-gray-400 hover:text-white"
+                                    onClick={handleCloseModal}
+                                    className="text-gray-400 hover:text-white hover:rotate-90 transition-all duration-300"
+                                    aria-label="Cerrar modal"
                                 >
                                     <X size={32} />
                                 </button>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-8">
+                                {/* Vista 360° */}
                                 <div className="relative">
                                     <div className="relative h-96 backdrop-blur-lg bg-white/5 rounded-2xl overflow-hidden">
                                         <img
-                                            src={selectedSneaker.image}
-                                            alt={selectedSneaker.name}
+                                            src={getCurrentImage()}
+                                            alt={`${selectedSneaker.name} - ${selectedColor}`}
                                             style={{ transform: `rotateY(${rotation}deg)` }}
                                             className="w-full h-full object-cover transition-transform duration-300"
                                         />
@@ -167,13 +209,15 @@ export default function page() {
                                     <div className="flex justify-center space-x-4 mt-4">
                                         <button
                                             onClick={() => setRotation(rotation - 45)}
-                                            className="p-3 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-full hover:border-yellow-400 transition-colors"
+                                            className="p-3 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-full hover:border-yellow-400 hover:scale-110 transition-all"
+                                            aria-label="Rotar izquierda"
                                         >
                                             <ChevronLeft />
                                         </button>
                                         <button
                                             onClick={() => setRotation(rotation + 45)}
-                                            className="p-3 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-full hover:border-yellow-400 transition-colors"
+                                            className="p-3 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-full hover:border-yellow-400 hover:scale-110 transition-all"
+                                            aria-label="Rotar derecha"
                                         >
                                             <ChevronRight />
                                         </button>
@@ -181,6 +225,7 @@ export default function page() {
                                     <p className="text-center text-sm text-gray-400 mt-2">Vista 360° - Usa las flechas</p>
                                 </div>
 
+                                {/* Detalles del producto */}
                                 <div className="space-y-6">
                                     <div>
                                         <h3 className="text-3xl font-bold mb-4">${selectedSneaker.price.toLocaleString('es-MX')}</h3>
@@ -200,14 +245,20 @@ export default function page() {
                                         <h4 className="font-bold text-yellow-400 mb-2">Colores disponibles</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {selectedSneaker.colors.map(color => (
-                                                <div
+                                                <button
                                                     key={color}
-                                                    className="px-3 py-1 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-full text-sm"
+                                                    onClick={() => handleColorChange(color)}
+                                                    className={`px-4 py-2 backdrop-blur-lg border rounded-full text-sm transition-all duration-300 ${
+                                                        selectedColor === color
+                                                            ? 'bg-yellow-400 border-yellow-400 text-black font-bold scale-110 shadow-lg shadow-yellow-500/50'
+                                                            : 'bg-white/5 border-yellow-500/20 hover:border-yellow-400 hover:bg-white/10'
+                                                    }`}
                                                 >
                                                     {color}
-                                                </div>
+                                                </button>
                                             ))}
                                         </div>
+                                        <p className="text-xs text-gray-500 mt-2">Haz clic en un color para ver la imagen</p>
                                     </div>
 
                                     <div>
@@ -216,7 +267,7 @@ export default function page() {
                                             {selectedSneaker.sizes.map(size => (
                                                 <div
                                                     key={size}
-                                                    className="px-3 py-2 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-lg text-center hover:border-yellow-400 transition-colors cursor-pointer"
+                                                    className="px-3 py-2 bg-white/5 backdrop-blur-lg border border-yellow-500/20 rounded-lg text-center hover:border-yellow-400 hover:bg-white/10 transition-colors cursor-pointer"
                                                 >
                                                     {size}
                                                 </div>
@@ -230,6 +281,32 @@ export default function page() {
                 </div>
             )}
 
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+                @keyframes scaleIn {
+                    from {
+                        opacity: 0;
+                        transform: scale(0.9);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-out;
+                }
+                .animate-scaleIn {
+                    animation: scaleIn 0.3s ease-out;
+                }
+            `}</style>
         </>
-    )
+    );
 }
