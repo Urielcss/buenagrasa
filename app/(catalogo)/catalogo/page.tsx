@@ -98,9 +98,10 @@ export default function Page() {
                                         aria-label="Filtrar por categoría"
                                     >
                                         <option value="">Todas las categorías</option>
-                                        <option value="Running">Running</option>
+                                        <option value="Lifestyle">Lifestyle</option>
                                         <option value="Casual">Casual</option>
                                         <option value="Basketball">Basketball</option>
+                                        <option value="Dunks & Blazers">Dunks & Blazers</option>
                                     </select>
 
                                     <select
@@ -110,10 +111,10 @@ export default function Page() {
                                         aria-label="Filtrar por marca"
                                     >
                                         <option value="">Todas las marcas</option>
-                                        <option value="FutureFit">FutureFit</option>
-                                        <option value="ProSport">ProSport</option>
-                                        <option value="StreetStyle">StreetStyle</option>
-                                        <option value="UrbanWear">UrbanWear</option>
+                                        <option value="Vans">Vans</option>
+                                        <option value="Nike">Nike</option>
+                                        <option value="Converse">Converse</option>
+                                        <option value="Jordan">Jordan</option>
                                     </select>
 
                                     <select
