@@ -115,7 +115,7 @@ export const sneakersData = [
         image: "https://static.nike.com/a/images/t_web_pdp_936_v2/f_auto,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/796ae977-4772-47ca-93bf-ee73d5611174/JORDAN+TATUM+4.png",
         imagesByColor:{
             "Blanco":"https://static.nike.com/a/images/t_web_pdp_936_v2/f_auto,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/796ae977-4772-47ca-93bf-ee73d5611174/JORDAN+TATUM+4.png",
-            "Negro ":"https://static.nike.com/a/images/t_web_pdp_936_v2/f_auto,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/f9a17c37-7bde-46db-96fc-57a3d862b8c1/JORDAN+TATUM+4.png"
+            "Negro":"https://static.nike.com/a/images/t_web_pdp_936_v2/f_auto,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/f9a17c37-7bde-46db-96fc-57a3d862b8c1/JORDAN+TATUM+4.png"
         }
     },
     {
