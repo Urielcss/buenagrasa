@@ -446,17 +446,23 @@ export default function Page() {
                                         {cart.map((item, index) => (
                                             <div 
                                                 key={index}
-                                                className="backdrop-blur-lg bg-white/5 p-4 rounded-2xl border border-yellow-500/20 flex gap-4"
+                                                className="backdrop-blur-lg bg-white/5 p-3 rounded-2xl border border-yellow-500/20 flex gap-2 items-start"
+                                                //Se comenta esta linea por el contendor full responsive
+                                                //className="backdrop-blur-lg bg-white/5 p-4 rounded-2xl border border-yellow-500/20 flex gap-4"
                                             >
                                                 <img
                                                     src={item.sneaker.imagesByColor?.[item.selectedColor] || item.sneaker.image}
                                                     alt={item.sneaker.name}
-                                                    className="w-24 h-24 object-cover rounded-lg"
+                                                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
+                                                    //Se comenta linea por contenedor full responsive
+                                                    //className="w-24 h-24 object-cover rounded-lg"
                                                 />
                                                 <div className="flex-1">
                                                     <h3 className="font-bold text-yellow-400">{item.sneaker.name}</h3>
                                                     <p className="text-sm text-gray-400">{item.sneaker.model}</p>
-                                                    <div className="flex gap-4 text-sm mt-2">
+                                                    <div className="flex flex-wrap gap-2 text-xs sm:text-sm mt-2">
+                                                        
+                                                    {/*<div className="flex gap-4 text-sm mt-2">*/}
                                                         <span className="bg-white/10 px-2 py-1 rounded">Color: {item.selectedColor}</span>
                                                         <span className="bg-white/10 px-2 py-1 rounded">Talla: {item.selectedSize}</span>
                                                         <span className="bg-white/10 px-2 py-1 rounded">Cant: {item.quantity}</span>
